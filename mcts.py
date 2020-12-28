@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     steps = 1000000
     c = 100
-    tree = Tree(12)
+    tree = Tree(9)
     leaf_node = {}
     rewards = []
 

@@ -1,5 +1,12 @@
 import numpy as np
+
 from node import Node
+
+
+def numpy_pop(numpy_array):
+    to_return = numpy_array[0]
+    numpy_array = np.delete(numpy_array, 0)
+    return numpy_array, [to_return]
 
 
 class Tree(object):
@@ -10,12 +17,20 @@ class Tree(object):
         self.root = Node()
         self.total_node.append(self.root)
         old_level = [self.root]
-        for level in range(1, height+1):
+
+        for level in range(1, height + 1):
+            # For each level of the three
             if level != height:
                 # For all the nodes that are not leaves
                 new_level = [Node() for count in range(2 ** level)]
             else:
-                new_level = [Node(reward=np.random.normal(0, 100, 1)) for count in range(2 ** level)]
+                # For all the nodes that are leaves
+                distribution = np.random.normal(0, 100, 2 ** level)
+                new_level = []
+                for count in range(2 ** level):
+                    distribution, reward = numpy_pop(distribution)
+                    new_level.append(Node(reward=reward))
+
             tmp = new_level[:]
             for node in old_level:
                 node.left = tmp.pop()
