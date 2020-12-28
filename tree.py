@@ -24,8 +24,8 @@ class Tree(object):
                 # For all the nodes that are not leaves
                 new_level = [Node() for count in range(2 ** level)]
             else:
-                # For all the nodes that are leaves
-                distribution = np.random.normal(0, 100, 2 ** level)
+                # For all nodes that are leaves
+                distribution = np.random.uniform(0, 100, 2 ** level)
                 new_level = []
                 for count in range(2 ** level):
                     distribution, reward = numpy_pop(distribution)

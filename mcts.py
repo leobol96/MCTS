@@ -29,9 +29,9 @@ def ucb_selection(parent: Node, c: int) -> Node:
 
 if __name__ == '__main__':
 
-    steps = 1000000
+    steps = 100000
     c = 100
-    tree = Tree(9)
+    tree = Tree(12)
     leaf_node = {}
     rewards = []
 
