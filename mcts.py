@@ -40,10 +40,11 @@ if __name__ == '__main__':
     robust_child_values_c = []
     max_child_values_c = []
     optimal_values_c = []
-    c_list = [0.01, 0.1, 0.5, 1, 2, 5, 10, 50, 100, 1000]
+    c_list = [0.001, 0.01, 0.1, 0.5, 1, 2, 5, 10, 50, 100, 1000, 10000]
     #c_list = [0.01, 0.1]
-    n_iterations = 100
+    n_episodes = 10
     n_steps = 1000
+    height = 12
 
     for c_value in c_list:
         print('***********************************')
@@ -51,11 +52,11 @@ if __name__ == '__main__':
         tmp_robust_child = []
         tmp_max_child = []
         tmp_optimal_values = []
-        for episode in range(n_iterations):
+        for episode in range(n_episodes):
             print('Episode: ' + str(episode+1))
             steps = n_steps
             c = c_value
-            tree = Tree(12)
+            tree = Tree(height)
             leaf_node = {}
             rewards = []
 
@@ -104,4 +105,4 @@ if __name__ == '__main__':
         robust_child_values_c.append(round(sum(tmp_robust_child) / len(tmp_robust_child), 2))
         optimal_values_c.append(round(sum(tmp_optimal_values) / len(tmp_optimal_values), 2))
 
-    common_functions.plot_bar_char(labels=c_list, robust_values=robust_child_values_c, max_values=max_child_values_c, optimal_values=optimal_values_c)
+    common_functions.plot_bar_char(height=str(height), n_episodes=str(n_episodes), n_steps=str(n_steps), labels=c_list, robust_values=robust_child_values_c, max_values=max_child_values_c, optimal_values=optimal_values_c)

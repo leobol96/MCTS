@@ -2,9 +2,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def plot_bar_char(labels, robust_values, max_values, optimal_values):
+def plot_bar_char(height, n_episodes, n_steps,  labels, robust_values, max_values, optimal_values):
     """
     Function to plot a bar char with bars per each label
+    :param height:
+    :param n_episodes:
+    :param n_steps:
+    :param max_values:
     :param labels: Label corresponding the C value
     :param robust_values: Value found with the algorithm
     :param optimal_values: Best possible value
@@ -19,7 +23,7 @@ def plot_bar_char(labels, robust_values, max_values, optimal_values):
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
     ax.set_ylabel('Scores')
-    ax.set_title('Scores for each different C value')
+    ax.set_title('Average of the scores obtained with depth: ' + height + ', episodes: ' + n_episodes + ' and ' + n_steps + ' steps for each episode')
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
     ax.legend()
