@@ -2,19 +2,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def plot_bar_char(labels, found_values, optimal_values):
+def plot_bar_char(labels, robust_values, max_values, optimal_values):
     """
     Function to plot a bar char with bars per each label
     :param labels: Label corresponding the C value
-    :param found_values: Value found with the algorithm
+    :param robust_values: Value found with the algorithm
     :param optimal_values: Best possible value
     """
     x = np.arange(len(labels))  # the label locations
-    width = 0.35  # the width of the bars
+    width = 0.30  # the width of the bars
 
     fig, ax = plt.subplots()
-    rects1 = ax.bar(x - width / 2, found_values, width, label='Found values')
-    rects2 = ax.bar(x + width / 2, optimal_values, width, label='Optimal values')
+    rects1 = ax.bar(x - width, robust_values, width, label='Robust child')
+    rects2 = ax.bar(x, max_values, width, label='Max child')
+    rects3 = ax.bar(x + width, optimal_values, width, label='Optimal child')
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
     ax.set_ylabel('Scores')
@@ -24,6 +25,7 @@ def plot_bar_char(labels, found_values, optimal_values):
     ax.legend()
     auto_label(rects1, ax)
     auto_label(rects2, ax)
+    auto_label(rects3, ax)
     fig.tight_layout()
     plt.show()
 

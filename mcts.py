@@ -37,20 +37,23 @@ def ucb_selection(parent: Node, c: int) -> Node:
 
 if __name__ == '__main__':
 
-    found_values_c = []
+    robust_child_values_c = []
+    max_child_values_c = []
     optimal_values_c = []
     c_list = [0.01, 0.1, 0.5, 1, 2, 5, 10, 50, 100, 1000]
     #c_list = [0.01, 0.1]
-    n_iterarionts = 10
+    n_iterations = 100
+    n_steps = 1000
 
     for c_value in c_list:
         print('***********************************')
         print('Episodes for C values', str(c_value))
-        tmp_found_values = []
+        tmp_robust_child = []
+        tmp_max_child = []
         tmp_optimal_values = []
-        for episode in range(n_iterarionts):
+        for episode in range(n_iterations):
             print('Episode: ' + str(episode+1))
-            steps = 100000
+            steps = n_steps
             c = c_value
             tree = Tree(12)
             leaf_node = {}
@@ -90,13 +93,15 @@ if __name__ == '__main__':
                     node.n_a += 1
                     node.t += current_node.reward[0]
 
-            print('Found value :' + str(max(leaf_node, key=leaf_node.get)))
+            print('Robust value :' + str(max(leaf_node, key=leaf_node.get)))
+            print('Max value :' + str(max(leaf_node)))
             print('Best value :' + str(max(rewards)))
             print('-----------------------')
-            tmp_found_values.append(max(leaf_node, key=leaf_node.get))
+            tmp_robust_child.append(max(leaf_node, key=leaf_node.get))
+            tmp_max_child.append(max(leaf_node))
             tmp_optimal_values.append(max(rewards))
-        found_values_c.append(round(sum(tmp_found_values) / len(tmp_found_values), 3))
-        optimal_values_c.append(round(sum(tmp_optimal_values) / len(tmp_optimal_values), 3))
-        #found_values_c.append(median(tmp_found_values))
+        max_child_values_c.append(round(sum(tmp_max_child) / len(tmp_max_child), 2))
+        robust_child_values_c.append(round(sum(tmp_robust_child) / len(tmp_robust_child), 2))
+        optimal_values_c.append(round(sum(tmp_optimal_values) / len(tmp_optimal_values), 2))
 
-    common_functions.plot_bar_char(labels=c_list, found_values=found_values_c, optimal_values=optimal_values_c)
+    common_functions.plot_bar_char(labels=c_list, robust_values=robust_child_values_c, max_values=max_child_values_c, optimal_values=optimal_values_c)
