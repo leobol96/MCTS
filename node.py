@@ -4,7 +4,7 @@ class Node(object):
     Each node that is not a leaf is connected to two children, the right one and the left one.
     """
 
-    def __init__(self, t=0, n_a=0, reward=None,  left=None, right=None):
+    def __init__(self, t=0, n_a=0, reward=None, left=None, right=None):
         """
         Constructor method
         :param t: Reward got reaching this node
@@ -27,4 +27,13 @@ class Node(object):
         """
         if self.reward is not None:
             return True
+        return False
 
+    def is_snowcamp_leaf(self) -> bool:
+        """
+        This method is used to return if the node is a lead node for the snowCamp
+        :return: If the node is a tree for the snowcamp.
+        """
+        if self.n_a == 0:
+            return True
+        return False

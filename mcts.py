@@ -24,8 +24,8 @@ def ucb_selection(parent: Node, c: int) -> Node:
     elif left.n_a != 0 and right.n_a == 0:
         return right
 
-    ucb_left = left.t/left.n_a + c * math.sqrt(math.log(parent.n_a) / left.n_a)
-    ucb_right = right.t/right.n_a + c * math.sqrt(math.log(parent.n_a) / right.n_a)
+    ucb_left = left.t / left.n_a + c * math.sqrt(math.log(parent.n_a) / left.n_a)
+    ucb_right = right.t / right.n_a + c * math.sqrt(math.log(parent.n_a) / right.n_a)
 
     if ucb_left > ucb_right:
         return left
@@ -37,76 +37,69 @@ def ucb_selection(parent: Node, c: int) -> Node:
 
 if __name__ == '__main__':
 
-    robust_child_values_c = []
-    max_child_values_c = []
-    optimal_values_c = []
-    #c_list = [0.001, 0.01, 0.1, 0.5, 1, 2, 5, 10, 50, 100, 1000]
-    c_list = np.arange(0, 200, 0.5)
-    #c_list = [0.01, 0.1]
-    n_episodes = 10
-    n_steps = 1000
+    c_list = np.arange(0, 200, 1)
+    n_iterations = 50
+    n_rollout = 5
     height = 12
-    trees = [Tree(height) for i in range(n_episodes)]
+    n_time_same_c = 10
+    rewards = []
 
+    # Creation of a single tree for each c values
+    tree = Tree(height)
+    for node in tree.total_node:
+        if node.is_leaf():
+            rewards.append(node.reward[0])
+
+    max_value = []
     for c_value in c_list:
-        print('***********************************')
-        print('Episodes for C values', str(c_value))
-        tmp_robust_child = []
-        tmp_max_child = []
-        tmp_optimal_values = []
-        for episode in range(n_episodes):
-            print('Episode: ' + str(episode+1))
-            steps = n_steps
-            c = c_value
-            tree = trees[episode]
+        print('Computation for C: ' + str(c_value))
+
+        for k in range(n_time_same_c):
+            # Make a copy of the root to don't forget it for the next c_value
             tree.initialize()
-            leaf_node = {}
-            rewards = []
+            root_copy = tree.root
+            tmp_max_value = []
 
-            for node in tree.total_node:
-                if node.is_leaf():
-                    rewards.append(node.reward[0])
+            # Until the end of the tree
+            while not root_copy.is_leaf():
+                # For each iteration
+                for iteration in range(n_iterations):
+                    passed_node = [root_copy]
+                    current_node = root_copy
 
-            for step in range(steps):
-                passed_node = [tree.root]
-                current_node = tree.root
-                while current_node.n_a != 0:
-                    # tree traversal
-                    current_node = ucb_selection(current_node, c)
-                    passed_node.append(current_node)
-                    if current_node.is_leaf():
-                        break
+                    # Three policy
+                    while not current_node.is_snowcamp_leaf() and not current_node.is_leaf():
+                        current_node = ucb_selection(current_node, c_value)
+                        passed_node.append(current_node)
 
-                # Expansion
-                if not current_node.is_leaf():
-                    current_node = random.choice([current_node.left, current_node.right])
-                    passed_node.append(current_node)
+                    # Three expansion
+                    if not current_node.is_leaf():
+                        current_node = random.choice([current_node.left, current_node.right])
+                        passed_node.append(current_node)
 
-                # Simulation
-                while not current_node.is_leaf():
-                    current_node = random.choice([current_node.left, current_node.right])
+                    # For a number of rollout
+                    for rollout in range(n_rollout):
+                        current_node_copy = current_node
 
-                if current_node.reward[0] in leaf_node:
-                    leaf_node[(current_node.reward[0])] += 1
-                else:
-                    leaf_node[(current_node.reward[0])] = 1
+                        # Roll-out
+                        while not current_node_copy.is_leaf():
+                            current_node_copy = random.choice([current_node_copy.left, current_node_copy.right])
 
-                # Back-up
-                passed_node.reverse()
-                for node in passed_node:
-                    node.n_a += 1
-                    node.t += current_node.reward[0]
+                        # Back-up
+                        passed_node.reverse()
+                        for node in passed_node:
+                            node.n_a += 1
+                            node.t += current_node_copy.reward[0]
 
-            print('Robust value :' + str(max(leaf_node, key=leaf_node.get)))
-            print('Max value :' + str(max(leaf_node)))
-            print('Best value :' + str(max(rewards)))
-            print('-----------------------')
-            tmp_robust_child.append(max(leaf_node, key=leaf_node.get))
-            tmp_max_child.append(max(leaf_node))
-            tmp_optimal_values.append(max(rewards))
-        max_child_values_c.append(round(sum(tmp_max_child) / len(tmp_max_child), 2))
-        robust_child_values_c.append(round(sum(tmp_robust_child) / len(tmp_robust_child), 2))
-        optimal_values_c.append(round(sum(tmp_optimal_values) / len(tmp_optimal_values), 2))
+                root_copy = ucb_selection(root_copy, c_value)
+            tmp_max_value.append(root_copy.reward[0])
+            root_copy = tree.root
+        max_value.append(sum(tmp_max_value) / len(tmp_max_value))
+    optimal_values = len(max_value) * [max(rewards)]
 
-    #common_functions.plot_bar_char(height=str(height), n_episodes=str(n_episodes), n_steps=str(n_steps), labels=c_list, robust_values=robust_child_values_c, max_values=max_child_values_c, optimal_values=optimal_values_c)
-    common_functions.plot_char(height=str(height), n_episodes=str(n_episodes), n_steps=str(n_steps), labels=c_list, robust_values=robust_child_values_c, max_values=max_child_values_c, optimal_values=optimal_values_c)
+    common_functions.plot_char(height=str(height),
+                               n_iterations=str(n_iterations),
+                               n_rollout=str(n_rollout),
+                               labels=c_list,
+                               max_values=max_value,
+                               optimal_values=optimal_values)
