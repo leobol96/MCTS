@@ -1,17 +1,22 @@
 import numpy as np
+import common_functions
 
 from node import Node
 
 
-def numpy_pop(numpy_array):
-    to_return = numpy_array[0]
-    numpy_array = np.delete(numpy_array, 0)
-    return numpy_array, [to_return]
-
-
 class Tree(object):
+    """
+    This class represents the Binary tree used to perform the MCTS algorithm.
+    The tree is binary, so every node has two children the left one and the right one.
+    """
 
     def __init__(self, height):
+        """
+        This is the constructor method of the tree.
+        From the root, layer to layer, it builds the tree iteratively.
+        The last layer of the tree will have 2^height leaves nodes.
+        :param height: The height of the tree.
+        """
         # Build a three
         self.total_node = []
         self.root = Node()
@@ -28,7 +33,7 @@ class Tree(object):
                 distribution = np.random.uniform(0, 100, 2 ** level)
                 new_level = []
                 for count in range(2 ** level):
-                    distribution, reward = numpy_pop(distribution)
+                    distribution, reward = common_functions.numpy_pop(distribution)
                     new_level.append(Node(reward=reward))
 
             tmp = new_level[:]

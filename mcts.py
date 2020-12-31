@@ -1,8 +1,7 @@
 import math
 import random
-import common_functions
-from statistics import median
 
+import common_functions
 from node import Node
 from tree import Tree
 
