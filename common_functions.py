@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.ndimage.filters import gaussian_filter1d
 
+
 def plot_bar_char(height, n_episodes, n_steps, labels, robust_values, max_values, optimal_values):
     """
     Function to plot a bar char with bars per each label
@@ -54,7 +55,8 @@ def plot_char(height, n_episodes, n_steps, labels, robust_values, max_values, op
     plt.plot(labels, robust_smoothed, label='robust child')
     plt.plot(labels, max_smoothed, label='max child')
     plt.plot(labels, best_smoothed, label='optimal child')
-    plt.title('Average of the scores obtained with depth: ' + height + ', episodes: ' + n_episodes + ' and ' + n_steps + ' steps for each episode')
+    plt.title(
+        'Average of the scores obtained with depth: ' + height + ', episodes: ' + n_episodes + ' and ' + n_steps + ' steps for each episode')
     plt.legend()
     plt.show()
 

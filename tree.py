@@ -43,3 +43,8 @@ class Tree(object):
                 self.total_node.append(node.left)
                 self.total_node.append(node.right)
             old_level = new_level
+
+    def initialize(self):
+        for node in self.total_node:
+            node.n_a = 0
+            node.t = 0

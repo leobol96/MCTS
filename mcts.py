@@ -46,6 +46,7 @@ if __name__ == '__main__':
     n_episodes = 10
     n_steps = 1000
     height = 12
+    trees = [Tree(height) for i in range(n_episodes)]
 
     for c_value in c_list:
         print('***********************************')
@@ -57,7 +58,8 @@ if __name__ == '__main__':
             print('Episode: ' + str(episode+1))
             steps = n_steps
             c = c_value
-            tree = Tree(height)
+            tree = trees[episode]
+            tree.initialize()
             leaf_node = {}
             rewards = []
 
