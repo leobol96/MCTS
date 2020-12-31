@@ -1,5 +1,6 @@
 import math
 import random
+import numpy as np
 
 import common_functions
 from node import Node
@@ -39,7 +40,8 @@ if __name__ == '__main__':
     robust_child_values_c = []
     max_child_values_c = []
     optimal_values_c = []
-    c_list = [0.001, 0.01, 0.1, 0.5, 1, 2, 5, 10, 50, 100, 1000, 10000]
+    #c_list = [0.001, 0.01, 0.1, 0.5, 1, 2, 5, 10, 50, 100, 1000]
+    c_list = np.arange(0, 200, 0.5)
     #c_list = [0.01, 0.1]
     n_episodes = 10
     n_steps = 1000
@@ -104,4 +106,5 @@ if __name__ == '__main__':
         robust_child_values_c.append(round(sum(tmp_robust_child) / len(tmp_robust_child), 2))
         optimal_values_c.append(round(sum(tmp_optimal_values) / len(tmp_optimal_values), 2))
 
-    common_functions.plot_bar_char(height=str(height), n_episodes=str(n_episodes), n_steps=str(n_steps), labels=c_list, robust_values=robust_child_values_c, max_values=max_child_values_c, optimal_values=optimal_values_c)
+    #common_functions.plot_bar_char(height=str(height), n_episodes=str(n_episodes), n_steps=str(n_steps), labels=c_list, robust_values=robust_child_values_c, max_values=max_child_values_c, optimal_values=optimal_values_c)
+    common_functions.plot_char(height=str(height), n_episodes=str(n_episodes), n_steps=str(n_steps), labels=c_list, robust_values=robust_child_values_c, max_values=max_child_values_c, optimal_values=optimal_values_c)

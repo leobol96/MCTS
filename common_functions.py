@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
+from scipy.ndimage.filters import gaussian_filter1d
 
 def plot_bar_char(height, n_episodes, n_steps, labels, robust_values, max_values, optimal_values):
     """
@@ -32,6 +32,30 @@ def plot_bar_char(height, n_episodes, n_steps, labels, robust_values, max_values
     auto_label(rects2, ax)
     auto_label(rects3, ax)
     fig.tight_layout()
+    plt.show()
+
+
+def plot_char(height, n_episodes, n_steps, labels, robust_values, max_values, optimal_values):
+    """
+    Plot a normal graph. The x-axis represents the C-values and the y-axis represents the mean of the scores for
+    the robust child, the max child and the optimal child.
+    :param height: Height of the tree
+    :param n_episodes: Number of episodes for each C
+    :param n_steps: Number of steps for each episode
+    :param max_values: Mean of the max children values
+    :param labels: Label corresponding the C value
+    :param robust_values:  Mean of the robust children values
+    :param optimal_values: Mean of the best possible values
+    """
+    robust_smoothed = gaussian_filter1d(robust_values, sigma=3)
+    max_smoothed = gaussian_filter1d(max_values, sigma=3)
+    best_smoothed = gaussian_filter1d(optimal_values, sigma=3)
+
+    plt.plot(labels, robust_smoothed, label='robust child')
+    plt.plot(labels, max_smoothed, label='max child')
+    plt.plot(labels, best_smoothed, label='optimal child')
+    plt.title('Average of the scores obtained with depth: ' + height + ', episodes: ' + n_episodes + ' and ' + n_steps + ' steps for each episode')
+    plt.legend()
     plt.show()
 
 
