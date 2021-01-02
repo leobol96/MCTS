@@ -107,7 +107,7 @@ if __name__ == '__main__':
 
     n_iterations = 50
     n_rollout = 5
-    height = 17
+    height = 12
     n_time_same_c = 30
     rewards = []
     best_child_methods = ['max', 'robust', 'ucb']
