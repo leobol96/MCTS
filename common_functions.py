@@ -33,31 +33,41 @@ def plot_bar_char(height, n_episodes, n_steps, labels, max_values, optimal_value
     plt.show()
 
 
-def plot_char(height, n_iterations, n_rollout, labels, max_child_values, optimal_values, smooth: bool, sigma: int = 2):
+def plot_char(height, n_iterations, n_rollout, labels_c, scores_list, labels_best_child, sigma: int = 2):
     """
     Plot a normal graph. The x-axis represents the C-values and the y-axis represents the mean of the scores for
     the robust child, the max child and the optimal child.
     :param height: Height of the tree
-    :param n_iterations: Number of episodes for each C
-    :param n_rollout: Number of steps for each episode
-    :param max_child_values: Mean of the max children values
-    :param labels: Label corresponding the C value
-    :param optimal_values: Mean of the best possible values
-    :param smooth: If true the graph will be smoothed using the sigma.
-    :param sigma: The sigma used to smooth the graph. (1-4). Default sigma is 2.
+    :param n_iterations: Number of iterations
+    :param n_rollout: Number of rollout steps
+    :param labels_c: Labels of the c value
+    :param scores_list: List of the scores. One list for every Best child method
+    :param labels_best_child: Labels of the best child methods used
+    :param sigma: Sigma to use to smooth the graph
+    :return:
     """
 
-    if smooth:
-        plt.plot(labels, gaussian_filter1d(max_child_values, sigma=sigma), label='max child')
-        plt.plot(labels, gaussian_filter1d(optimal_values, sigma=sigma), label='optimal child')
+    fig, axs = plt.subplots(2, 1, constrained_layout=True)
+    mng = plt.get_current_fig_manager()
+    mng.window.showMaximized()
+    axs[0].set_title('Not smoothed')
 
-    else:
-        plt.plot(labels, max_child_values, label='max child')
-        plt.plot(labels, optimal_values, label='optimal child')
+    for idx, best_child_type in enumerate(scores_list):
+        axs[0].plot(labels_c, best_child_type, label=labels_best_child[idx])
+    axs[0].set_ylabel('Scores')
+    axs[0].set_xlabel('C')
+    axs[0].legend()
 
-    plt.title(
-        'Average of the scores obtained with depth: ' + height + ', iterations: ' + n_iterations + ' and ' + n_rollout + ' rollout for each iteration')
-    plt.legend()
+    axs[1].set_title('Smoothed with Sigma = ' + str(sigma))
+    for idx, best_child_type in enumerate(scores_list):
+        axs[1].plot(labels_c, gaussian_filter1d(best_child_type, sigma=sigma), label=labels_best_child[idx])
+    axs[1].set_ylabel('Scores')
+    axs[1].set_xlabel('C')
+    axs[1].legend()
+
+    fig.suptitle(
+        'Average of the scores obtained with depth: ' + height + ', iterations: ' + n_iterations + ' and ' + n_rollout + ' rollouts for each iteration',
+        fontsize=16)
     plt.show()
 
 
