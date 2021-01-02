@@ -35,13 +35,28 @@ def ucb_selection(parent: Node, c: int) -> Node:
         return random.choice([left, right])
 
 
+def max_child(parent: Node) -> Node:
+    """
+    This method is used to select the new root.
+    The new root will be the one with the higher mean -> (t/n(a))
+    :param parent: Parent node
+    :return: Node with the higher mean
+    """
+    if parent.left.t / parent.left.n_a > parent.right.t / parent.right.n_a:
+        return parent.left
+    elif parent.left.t / parent.left.n_a < parent.right.t / parent.right.n_a:
+        return parent.right
+    else:
+        return random.choice([parent.left, parent.right])
+
+
 if __name__ == '__main__':
 
-    c_list = np.arange(0, 200, 1)
+    c_list = np.arange(0, 1000, 1)
     n_iterations = 50
     n_rollout = 5
     height = 12
-    n_time_same_c = 10
+    n_time_same_c = 1
     rewards = []
 
     # Creation of a single tree for each c values
@@ -50,11 +65,11 @@ if __name__ == '__main__':
         if node.is_leaf():
             rewards.append(node.reward[0])
 
-    max_value = []
+    max_child_values = []
     for c_value in c_list:
         print('Computation for C: ' + str(c_value))
 
-        for k in range(n_time_same_c):
+        for _ in range(n_time_same_c):
             # Make a copy of the root to don't forget it for the next c_value
             tree.initialize()
             root_copy = tree.root
@@ -91,15 +106,28 @@ if __name__ == '__main__':
                             node.n_a += 1
                             node.t += current_node_copy.reward[0]
 
-                root_copy = ucb_selection(root_copy, c_value)
+                #root_copy = ucb_selection(root_copy, c_value)
+                root_copy = max_child(root_copy)
+
             tmp_max_value.append(root_copy.reward[0])
             root_copy = tree.root
-        max_value.append(sum(tmp_max_value) / len(tmp_max_value))
-    optimal_values = len(max_value) * [max(rewards)]
+        max_child_values.append(sum(tmp_max_value) / len(tmp_max_value))
+    optimal_values = len(max_child_values) * [max(rewards)]
 
     common_functions.plot_char(height=str(height),
                                n_iterations=str(n_iterations),
                                n_rollout=str(n_rollout),
                                labels=c_list,
-                               max_values=max_value,
-                               optimal_values=optimal_values)
+                               max_child_values=max_child_values,
+                               optimal_values=optimal_values,
+                               smooth=False)
+
+    for sigma in range(1, 20, 1):
+        common_functions.plot_char(height=str(height),
+                                   n_iterations=str(n_iterations),
+                                   n_rollout=str(n_rollout),
+                                   labels=c_list,
+                                   max_child_values=max_child_values,
+                                   optimal_values=optimal_values,
+                                   smooth=True,
+                                   sigma=sigma)

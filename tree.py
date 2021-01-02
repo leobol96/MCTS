@@ -45,6 +45,10 @@ class Tree(object):
             old_level = new_level
 
     def initialize(self):
+        """
+        This function is used to initialize or reset the tree.
+        This will set for each node of the tree the values t and n_a to 0.
+        """
         for node in self.total_node:
             node.n_a = 0
             node.t = 0

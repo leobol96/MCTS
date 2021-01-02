@@ -11,7 +11,6 @@ def plot_bar_char(height, n_episodes, n_steps, labels, max_values, optimal_value
     :param n_steps: Number of steps for each episode
     :param max_values: Mean of the max children values
     :param labels: Label corresponding the C value
-    :param robust_values:  Mean of the robust children values
     :param optimal_values: Mean of the best possible values
     """
     x = np.arange(len(labels))  # the label locations
@@ -34,23 +33,28 @@ def plot_bar_char(height, n_episodes, n_steps, labels, max_values, optimal_value
     plt.show()
 
 
-def plot_char(height, n_iterations, n_rollout, labels, max_values, optimal_values):
+def plot_char(height, n_iterations, n_rollout, labels, max_child_values, optimal_values, smooth: bool, sigma: int = 2):
     """
     Plot a normal graph. The x-axis represents the C-values and the y-axis represents the mean of the scores for
     the robust child, the max child and the optimal child.
     :param height: Height of the tree
     :param n_iterations: Number of episodes for each C
     :param n_rollout: Number of steps for each episode
-    :param max_values: Mean of the max children values
+    :param max_child_values: Mean of the max children values
     :param labels: Label corresponding the C value
-    :param robust_values:  Mean of the robust children values
     :param optimal_values: Mean of the best possible values
+    :param smooth: If true the graph will be smoothed using the sigma.
+    :param sigma: The sigma used to smooth the graph. (1-4). Default sigma is 2.
     """
-    max_smoothed = gaussian_filter1d(max_values, sigma=4)
-    best_smoothed = gaussian_filter1d(optimal_values, sigma=4)
 
-    plt.plot(labels, max_smoothed, label='max child')
-    plt.plot(labels, best_smoothed, label='optimal child')
+    if smooth:
+        plt.plot(labels, gaussian_filter1d(max_child_values, sigma=sigma), label='max child')
+        plt.plot(labels, gaussian_filter1d(optimal_values, sigma=sigma), label='optimal child')
+
+    else:
+        plt.plot(labels, max_child_values, label='max child')
+        plt.plot(labels, optimal_values, label='optimal child')
+
     plt.title(
         'Average of the scores obtained with depth: ' + height + ', iterations: ' + n_iterations + ' and ' + n_rollout + ' rollout for each iteration')
     plt.legend()
