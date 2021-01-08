@@ -99,10 +99,22 @@ def mcts_steps(root):
             node.t += current_node_copy.reward[0]
 
 
+def print_scores(array_of_scores, limit_value):
+    """
+    This method print all the rewards and the c values used to obtain them.
+    :param array_of_scores: Array of scores where check
+    :param limit_value: Value limit. All the values above this limit will be printed.
+    """
+    for idx, x in enumerate(array_of_scores):
+        if x > limit_value:
+            print('Reward of: ' + str(x) + ' C: ' + str(c_list[idx]))
+
+
 if __name__ == '__main__':
 
-    c_list = np.append(np.arange(0, 1, 0.1), np.arange(1, 10, 0.5),)
-    c_list = np.append(c_list, np.arange(10, 100, 2))
+    # Create the c parameter list
+    c_list = np.append(np.arange(0, 1, 0.1), np.arange(1, 10, 0.5), )
+    c_list = np.append(c_list, np.arange(10, 150, 1))
     c_list = np.append(c_list, np.arange(100, 1000, 5))
 
     n_iterations = 50
@@ -148,6 +160,7 @@ if __name__ == '__main__':
                 root_copy = tree.root
             # Append the mean of the values obtained using the same c value
             best_child_scores.append(sum(tmp_values) / len(tmp_values))
+            # best_child_scores.append(max(tmp_values))
         # Append the reward obtained using a specific best child function
         scores.append(best_child_scores)
 
@@ -155,6 +168,7 @@ if __name__ == '__main__':
     best_child_methods.append('optimal')
     scores.append(len(scores[0]) * [max(rewards)])
 
+    # print_scores(np.array(scores[0]), 99.8)
     common_functions.plot_char(height=str(height),
                                n_iterations=str(n_iterations),
                                n_rollout=str(n_rollout),
