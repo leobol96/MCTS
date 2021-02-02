@@ -1,4 +1,4 @@
-# MCTS
+# Monte Carlo Tree Search (MTCS)
 Monte carlo tree search
 
 ## Structure
